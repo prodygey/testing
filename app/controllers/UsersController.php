@@ -29,9 +29,9 @@ class UsersController extends Controller {
 
         $records_per_page = 5;
 
-        $user = $this->UsersModel->page($q, $records_per_page, $page);
-        $data['users'] = $user['records'];
-        $total_rows = $user['total_rows'];
+        $all = $this->UsersModel->page($q, $records_per_page, $page);
+        $data['users'] = $all['records'];
+        $total_rows = $all['total_rows'];
         $data['q'] = $q;
 
         $this->pagination->set_options([
@@ -42,7 +42,12 @@ class UsersController extends Controller {
             'page_delimiter' => '&page='
         ]);
         $this->pagination->set_theme('bootstrap');
-        $this->pagination->initialize($total_rows, $records_per_page, $page, 'users?q='.$q);
+        $this->pagination->initialize(
+            $total_rows, 
+            $records_per_page, 
+            $page, 
+            'users?q='. urlencode($q)
+        );
         $data['page'] = $this->pagination->paginate();
 
         $this->call->view('users/index', $data);
